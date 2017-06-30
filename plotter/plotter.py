@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import os
 
-
-input1 = 'data/Giorgio-Re/PFC/TDI21301017_cell2_pia_spines.MA1.ASC.swc'
-input2 = 'data/Xiaojun-Re/L2/PFC/data_02.swc'
-output = 'image/neuron_02.eps'
+# input1 = 'data/Giorgio-Re/PFC/TDI21301017_cell2_pia_spines.MA1.ASC.swc'
+input_folder = 'data\\Xiaojun-Re\\'
+# output = 'image/neuron_02.eps'
+output_folder = 'image\\'
 
 class Node:
 
@@ -18,18 +19,23 @@ class Node:
         self.parent = int(data[6])
 
 
+def fetch_files(all_files):
+    for root, dirs, files in os.walk(input_folder, topdown=False):
+        for name in files:
+            all_files.append(os.path.join(root, name))
+
 
 if __name__ == '__main__':
 
-    fig = plt.figure(figsize=(20, 10))
-    ax1 = fig.add_subplot(121, projection='3d')
-    ax2 = fig.add_subplot(122, projection='3d')
-
-    axs = [ax1, ax2]
-    files = [input1, input2]
-    for file, ax in zip(files, axs):
+    all_files = []
+    fetch_files(all_files)
+    for filename in all_files:
+        print('processing ' + filename)
+        fig = plt.figure(figsize=(10, 10))
+        ax = fig.add_subplot(111, projection='3d')
+        ax.view_init(azim=-90, elev=90)
         nodes = []
-        with open(file, 'r') as file:
+        with open(filename, 'r') as file:
             for line in file:
                 if line[0] != '#':
                     nodes.append(Node(line))
@@ -56,8 +62,8 @@ if __name__ == '__main__':
                 dends_r.append(node.radius)
 
         ax.scatter(somas_x, somas_y, somas_z, color='g', s=somas_r)
-        ax.scatter(axons_x, axons_y, axons_z, color='r', s=axons_r)
-        ax.scatter(dends_x, dends_y, dends_z, color='b', s=dends_r)
+        ax.scatter(axons_x, axons_y, axons_z, color='b', s=axons_r)
+        ax.scatter(dends_x, dends_y, dends_z, color='r', s=dends_r)
 
-    fig.savefig(output, format='eps', dpi=1000)
-    plt.close(fig)
+        fig.savefig(output_folder + filename[filename.rfind('\\') + 1:filename.rfind('.')] + '.eps', format='eps', dpi=1000)
+        plt.close(fig)
