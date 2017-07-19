@@ -3,7 +3,8 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 
 # input1 = 'data/Giorgio-Re/PFC/TDI21301017_cell2_pia_spines.MA1.ASC.swc'
-input_folder = 'data\\Xiaojun-Re\\'
+# input_folder = 'data\\Xiaojun-Re\\'
+input_folder = 'data\\test\\'
 # output = 'image/neuron_02.eps'
 output_folder = 'image\\'
 
@@ -31,7 +32,9 @@ if __name__ == '__main__':
     fetch_files(all_files)
     for filename in all_files:
         print('processing ' + filename)
-        fig = plt.figure(figsize=(10, 10))
+        to_file = filename.replace('data\\', output_folder)
+        to_file = to_file.replace('.swc', '.eps')
+        fig = plt.figure(figsize=(8, 8))
         ax = fig.add_subplot(111, projection='3d')
         ax.view_init(azim=-90, elev=90)
         nodes = []
@@ -65,5 +68,10 @@ if __name__ == '__main__':
         ax.scatter(axons_x, axons_y, axons_z, color='b', s=axons_r)
         ax.scatter(dends_x, dends_y, dends_z, color='r', s=dends_r)
 
-        fig.savefig(output_folder + filename[filename.rfind('\\') + 1:filename.rfind('.')] + '.eps', format='eps', dpi=1000)
-        plt.close(fig)
+        directory = os.path.dirname(to_file)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        # fig.savefig(to_file, format='eps', dpi=1000)
+        # plt.close(fig)
+        plt.show()
