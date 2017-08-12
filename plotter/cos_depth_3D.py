@@ -18,7 +18,7 @@ if __name__ == '__main__':
         file.readline()
         for line in file:
             arr = line.strip().split(',')
-            theta = mt.cos(float(arr[1]))
+            theta = mt.sin(float(arr[1]) * mt.pi / 180)
             depth = float(arr[3])
             x.append(theta)
             y.append(depth)
@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.set_xlabel('cos(theta)')
+    ax.set_xlabel('sin(theta)')
     ax.set_ylabel('depth')
     hist, xedges, yedges = np.histogram2d(x, y, bins=[100, 10])
     np.savetxt('image\\yedges.csv', yedges, delimiter='\t\n', fmt='%.4f')

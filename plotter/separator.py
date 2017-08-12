@@ -1,8 +1,8 @@
 import os
 
-input_folder = 'data\\Xiaojun-Re'
-output_axon_folder = 'data\\Xiaojun-Axon'
-output_dend_folder = 'data\\Xiaojun-Dend'
+input_folder = 'data\\Xiaojun-Reduced'
+output_axon_folder = 'data\\Xiaojun-Axon-Reduced'
+output_dend_folder = 'data\\Xiaojun-Dend-Reduced'
 
 
 if __name__ == '__main__':
