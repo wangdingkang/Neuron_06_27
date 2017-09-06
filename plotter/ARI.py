@@ -26,14 +26,14 @@ if __name__ == '__main__':
 
 
     # find cliques in order to find strong groups
-    G = np.zeros(N, N)
+    G = np.zeros((N + 1, N + 1), dtype=np.int)
     for key in metrics:
         clusters = metrics[key]
         for cluster in clusters:
             for item in list(combinations(cluster, 2)):
                 G[item[0]][item[1]] += 1
                 G[item[1]][item[0]] += 1
-    G = G / 8
+    G = np.floor_divide(G, 4)
     print(G)
     Graph = nx.from_numpy_matrix(G)
     cliques = list(nx.find_cliques(Graph))
@@ -42,15 +42,17 @@ if __name__ == '__main__':
     # calculate ARI & S-index
     methods = list(metrics.keys())
     l = len(methods)
-    for m1, m2 in zip(methods, methods):
+    for item in list(combinations(methods, 2)):
+            m1 = item[0]
+            m2 = item[1]
             cluster_i = metrics[m1]
             cluster_j = metrics[m2]
+            # print(cluster_i, cluster_j)
+            P = np.zeros((K, K), dtype=float)
+            X = np.zeros((K, K), dtype=float)
+            W = np.zeros((K, K), dtype=float)
 
-            P = np.zeros(K, K, dtype=float)
-            X = np.zeros(K, K, dtype=float)
-            W = np.zeros(K, K, dtype=float)
-
-            sum_rij2, sum_ri2, sum_rj2 = 0, 0, 0
+            sum_rij2, sum_ri2, sum_rj2 = 0.0, 0.0, 0.0
 
             for i in range(K):
                 for j in range(K):
@@ -61,7 +63,7 @@ if __name__ == '__main__':
                     sum_ri2 += len(ri) * (len(ri) - 1) / 2
                     sum_rj2 += len(rj) * (len(rj) - 1) / 2
                     sum_rij2 += len(rij) * (len(rij) - 1) / 2;
-                    P[i][j] = float(len(rij)) / len(j)
+                    P[i][j] = float(len(rij)) / len(rj)
 
             sum_ri2 /= K;
             sum_rj2 /= K;
@@ -76,7 +78,7 @@ if __name__ == '__main__':
 
             print(m1, " ", m2)
             ARI = (sum_rij2 - sum_ri2 * sum_rj2 / CM2) / (0.5 * (sum_ri2 + sum_rj2) - sum_ri2 * sum_rj2 / CM2)
-            S = 1 - 4 * sum(np.multiply(np.multiply(W, X), 1 - X))
+            S = 1 - 4 * np.sum(np.multiply(np.multiply(W, X), 1 - X))
             print("ARI: ", ARI)
             print("S: ", S)
 
