@@ -27,9 +27,10 @@ if __name__ == '__main__':
     miny = min(y)
     y = [(i - miny) / ((maxy - miny)) for i in y]
 
-    fig = plt.figure()
+    fig = plt.figure('')
     ax = fig.add_subplot(111, projection='3d')
-    ax.set_xlabel('sin(theta)')
+    ax.set_title('3D Histogram of Cartridge Orientation', y=1.08)
+    ax.set_xlabel('angle')
     ax.set_ylabel('depth')
     hist, xedges, yedges = np.histogram2d(x, y, bins=[100, 10])
     np.savetxt('image\\yedges.csv', yedges, delimiter='\t\n', fmt='%.4f')
@@ -68,6 +69,8 @@ if __name__ == '__main__':
 
     p = ssd.squareform(ssd.pdist(hist.T, metric='euclidean'))
     ax.bar3d(xpos, ypos, zpos, dx, dy, dz, color='r', alpha=1.0, zsort='max')
+    ax.set_xticks((-1, -0.5, 0, 0.5, 1), minor=False)
+    ax.set_xticklabels(('-180', '-135', '-90', '-45', '0'), fontdict=None, minor=False)
     plt.show()
 
     # np.savetxt(output_file, p, delimiter=',', fmt='%.4f')

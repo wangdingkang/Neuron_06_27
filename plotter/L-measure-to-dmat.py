@@ -4,7 +4,7 @@ import scipy.spatial.distance as spd
 
 eps = 1e-6
 
-input_folder = 'data\\L-measures\\'
+input_folder = 'data\\L-measures-reduced\\'
 input_files = ['AAC_LMeasures-All.csv', 'AAC_LMeasures-Axons.csv', 'AAC_LMeasures-Dendrites.csv']
 output_folder = 'image\\'
 output_files = ['AAC_DL-All.txt', 'AAC_DL-Axons.txt', 'AAC_DL-Dendrites.txt']
@@ -25,5 +25,7 @@ if __name__ == '__main__':
         data = data - means[None, :]
         data = data / stds[None, :]
 
-        pdists = spd.squareform(spd.pdist(data, 'cityblock')).tolist()
-        np.savetxt(output_folder + output, pdists, fmt='%.4f', delimiter=' ')
+        np.savetxt(output_folder + output, data, fmt='%.4f', delimiter=' ')
+
+        # pdists = spd.squareform(spd.pdist(data, 'cityblock')).tolist()
+        # np.savetxt(output_folder + output, pdists, fmt='%.4f', delimiter=' ')
