@@ -4,18 +4,25 @@ import os
 import matplotlib.pyplot as plt
 
 input_folder = 'vectors//'
-
+output_folder = 'cluster//'
 files = os.listdir(input_folder)
 
 # print(files)
+K = 5
 
 for file in files:
     print(file)
-    my_matrix = np.loadtxt(os.path.join(input_folder, file))
-    # print(my_matrix)
+    X = np.loadtxt(os.path.join(input_folder, file))
 
-    Ks = range(2, 15)
-    km = [KMeans(n_clusters=i) for i in Ks]
-    score = [km[i].fit(my_matrix).score(my_matrix) for i in range(len(km))]
-    plt.plot(Ks, score)
-    plt.show()
+
+    km = KMeans(n_clusters=5)
+    cluster_labels = km.fit_predict(X)
+    filename = file[:file.find('_')]
+
+    with open(os.path.join(output_folder, filename + '.txt'), 'w') as tf:
+        for k in range(K):
+            for i in [x for x in range(len(cluster_labels)) if cluster_labels[x] == k]:
+                tf.write(str(i + 1) + ' ')
+            tf.write('\n')
+
+    print(cluster_labels)

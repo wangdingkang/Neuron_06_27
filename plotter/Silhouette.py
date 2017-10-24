@@ -10,6 +10,7 @@ from sklearn.manifold import TSNE
 import os
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+
 import numpy as np
 
 input_folder = 'vectors//'
@@ -17,7 +18,7 @@ output_folder = 'silhoutte_results//'
 
 files = os.listdir(input_folder)
 dim = 3
-range_n_clusters = [2, 3, 4, 5, 6, 7, 8]
+range_n_clusters = [2, 3, 4, 5, 6, 7, 8, 9, 10]
 # Generating the sample data from make_blobs
 # This particular setting has one distinct cluster and 3 clusters placed close
 # together.
@@ -110,22 +111,27 @@ for file in files:
         #     ax2.scatter(c[0], c[1], marker='$%d$' % i, alpha=1,
         #                 s=50, edgecolor='k')
         ax2.grid(False)
-        ax2.set_title("The visualization of the clustered data.")
+        ax2.set_title("Laplacian eigenmap embedding of the data")
         ax2.set_xlabel("x")
         ax2.set_ylabel("y")
         ax2.set_zlabel("z")
 
-        plt.suptitle(("Silhouette analysis for KMeans clustering on sample data "
-                      "with n_clusters = %d" % n_clusters),
+        plt.suptitle(("Silhouette analysis for KMeans clustering with descriptor function " + file[:file.find('_')] +
+                      " with n_clusters = %d" % n_clusters),
                      fontsize=14, fontweight='bold')
+        filename = file[:file.find('_')] + '_' + str(n_clusters) + '.png'
 
-        # plt.show()
-    # plt.plot(silhouete_temp)
-    # plt.show()
+        plt.savefig(os.path.join(output_folder, filename))
+        plt.close()
+
+    plt.plot(range_n_clusters, silhouete_temp)
+    plt.savefig(os.path.join(output_folder, file[:file.find('_')] + '_silhouette_score.png'))
+    plt.close()
     silhouetes.append(silhouete_temp)
 
 silhouetes_numpy = np.array(silhouetes)
 ssum = np.sum(silhouetes_numpy, axis=0)
-print(ssum)
+# print(ssum)
 plt.plot(range_n_clusters, ssum)
-# plt.show()
+plt.savefig(os.path.join(output_folder, 'total_silhouette_score.png'))
+plt.close()
