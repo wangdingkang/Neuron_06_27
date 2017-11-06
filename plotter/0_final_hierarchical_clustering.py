@@ -33,8 +33,10 @@ range_n_clusters = [2, 3, 4, 5, 6, 7, 8, 9, 10]
 # This particular setting has one distinct cluster and 3 clusters placed close
 # together.
 
+font_style = {'fontname': 'Arial'}
+
 silhouetes = []
-for file in files:
+for file in files[:1]:
     X = np.loadtxt(os.path.join(input_folder, file))
     model = SpectralEmbedding(n_components=dim,)
     np.set_printoptions(suppress=True)
@@ -52,7 +54,7 @@ for file in files:
         # The 1st subplot is the silhouette plot
         # The silhouette coefficient can range from -1, 1 but in this example all
         # lie within [-0.1, 1]
-        ax1.set_xlim([-0.1, 1])
+        ax1.set_xlim([-0.5, 0.8])
         # The (n_clusters+1)*10 is for inserting blank space between silhouette
         # plots of individual clusters, to demarcate them clearly.
         ax1.set_ylim([0, len(X) + (n_clusters + 1) * 10])
@@ -114,15 +116,15 @@ for file in files:
             # Compute the new y_lower for next plot
             y_lower = y_upper + 10  # 10 for the 0 samples
 
-        ax1.set_title("The silhouette plot for the various clusters.")
-        ax1.set_xlabel("The silhouette coefficient values")
-        ax1.set_ylabel("Cluster label")
+        ax1.set_title("Silhouette plot for various clusters", fontsize=12, **font_style)
+        ax1.set_xlabel("Silhouette coefficient values", fontsize=12, **font_style)
+        ax1.set_ylabel("Cluster label", fontsize=12, **font_style)
 
         # The vertical line for average silhouette score of all the values
         ax1.axvline(x=silhouette_avg, color="red", linestyle="--")
 
         ax1.set_yticks([])  # Clear the yaxis labels / ticks
-        ax1.set_xticks([-0.1, 0, 0.2, 0.4, 0.6, 0.8, 1])
+        ax1.set_xticks([-0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8])
 
         # 2nd Plot showing the actual clusters formed
         colors = cm.spectral(cluster_labels.astype(float) / n_clusters)
@@ -140,21 +142,23 @@ for file in files:
         #     ax2.scatter(c[0], c[1], marker='$%d$' % i, alpha=1,
         #                 s=50, edgecolor='k')
         ax2.grid(False)
-        ax2.set_title("Laplacian eigenmap embedding of the data")
-        ax2.set_xlabel("x")
-        ax2.set_ylabel("y")
-        ax2.set_zlabel("z")
+        ax2.set_title("Laplacian eigenmap embedding of the data", fontsize=12, **font_style)
+        ax2.set_xlabel("x", fontsize=12, **font_style)
+        ax2.set_ylabel("y", fontsize=12, **font_style)
+        ax2.set_zlabel("z", fontsize=12, **font_style)
 
-        plt.suptitle(("Silhouette analysis for KMeans clustering with descriptor function " + file[:file.find('_')] +
-                      " with n_clusters = %d" % n_clusters),
-                     fontsize=14, fontweight='bold')
-        filename = file[:file.find('_')] + '_' + str(n_clusters) + '.png'
+        plt.suptitle(("Silhouette analysis for hierarchical clustering with descriptor function " + file[:file.find('_')] +
+                      " with K = %d" % n_clusters),
+                     fontsize=16, fontweight='bold', **font_style)
+        filename = file[:file.find('_')] + '_' + str(n_clusters) + '.pdf'
 
-        plt.savefig(os.path.join(output_folder, filename))
+        plt.savefig(os.path.join(output_folder, filename), format='pdf')
         plt.close()
 
     plt.plot(range_n_clusters, silhouete_temp)
-    plt.savefig(os.path.join(output_folder, file[:file.find('_')] + '_silhouette_score.png'))
+    plt.xlabel('K value', fontsize=12, **font_style)
+    plt.ylabel('Silhouette coefficient value', fontsize=12, **font_style)
+    plt.savefig(os.path.join(output_folder, file[:file.find('_')] + '_silhouette_score.pdf'), format='pdf')
     plt.close()
     silhouetes.append(silhouete_temp)
 
@@ -162,5 +166,7 @@ silhouetes_numpy = np.array(silhouetes)
 ssum = np.sum(silhouetes_numpy, axis=0)
 # print(ssum)
 plt.plot(range_n_clusters, ssum)
-plt.savefig(os.path.join(output_folder, 'total_silhouette_score.png'))
+plt.xlabel('K value', fontsize=12, **font_style)
+plt.ylabel('Silhouette coefficient value', fontsize=12, **font_style)
+plt.savefig(os.path.join(output_folder, 'total_silhouette_score.pdf'), format='pdf')
 plt.close()
